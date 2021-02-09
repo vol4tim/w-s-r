@@ -1,54 +1,57 @@
-# Robonomics Winter School
+# Зимняя школа робономики
 
-## Getting ready
+## Подготовка
 
-### Robonomics node launch
+### Запуск узла робономики
 
-For dApp development and testing, we will use a local Robonomics node. To do this, you need to download the compiled binary file https://github.com/airalab/robonomics/releases. I will be using Ubuntu, so I download the appropriate version.
+Для разработки дапп и тестирования, мы будем использовать локальную ноду робономики.
+Для этого необходимо скачать, скомпилированный, бинарный файл https://github.com/airalab/robonomics/releases.
+Я буду использовать Ubuntu, по этому я скачиваю соответствующую версию.
 
-Unpack the archive
+Распаковываем архив
 ```sh
 unzip robonomics-ubuntu-0.24.0-x86_64.zip
 ```
 
-Now we can start the node in development mode. To do this, use the --dev flag
+Теперь можно запустить узел в режиме разработки. Для этого используем ключ --dev
 ```sh
 ./robonomics --dev
 ```
 
-### Browser extension
+### Браузерное расширение
 
-To store keys in a browser, there is a `polkadot{.js} extension`. In dApp we will use it to sign transactions.
+Для хранения ключей в браузере существует расширением `polkadot{.js} extension`. В дапп мы будем его использовать для подписи транзакций.
 
-The extension is currently available for `Google chrome` and `Firefox` https://polkadot.js.org/extension/
+На текущий момент расширение доступно для `Google chrome` и `Firefox` https://polkadot.js.org/extension/
 
-After installing the extension, create a new account.
+После установки расширения создаем новый аккаунт.
 ![screen1](./assets/screen1.png)
 
-> The first step is completed.
+> Первый шаг закончен.
 
-## DApp development
+## Разработка дапп
 
-> We will write the dApp using the vue.js framework, although you can use whatever you like/can.
+> Дапп будем писать с использованием фреймворка vue.js, хотя можно использовать все что нравиться, умеете.
 
-Let's start developing the dApp by creating a startup application with vue.js And here you can do it in two ways.
+Начнем разработку дапп с создания стартового приложения на vue.js
+И тут можно поступить двумя способами.
 
-Way 1:
+Способ 1:
 
-Using the `Vue cli` console utility.
-To do this, you need to install it https://cli.vuejs.org/guide/installation.html
+С использованием консольной утилитой `Vue cli`
+Для этого необходимо ее установить https://cli.vuejs.org/guide/installation.html
 
-After installation, you can run the command in the terminal
+После установки можно будет в терминале выполнить команду
 
 ```sh
 vue create mydapp
 ```
 
-Answer a few questions of the setup wizard.
+Отвечаем на несколько вопросов, мастера установки.
 
-Way 2:
+Способ 2:
 
-Clone the prepared git repository with the example and switch to step 1
+Склонировать подготовленный git репозиторий с примером и переключиться на шаг №1
 
 ```sh
 git clone https://github.com/vol4tim/example-robonomics-dapp.git mydapp
@@ -56,26 +59,26 @@ cd mydapp
 git checkout step-1
 ```
 
-As a result, we will get a directory with the installed startup application, which can already be launched and opened in the browser.
+В итоге получим директорию с установленым стартовым приложением, которое уже можно запустить и открыть в браузере.
 
 ```sh
 yarn
 yarn serve
 ```
 
-### Getting started with polkadot.js
+### Начинаем работать с polkadot.js
 
-#### Installing dependencies
+#### Установка зависимостей
 
-To connect the dApp to the Robonomics chain, there is the `@polkadot/api` library. And for interaction of dApp with an extension with keys, we have the `@polkadot/extension-dapp` library. We need to install them into our application.
+Для подключения дапп к чейну Робономики, существует библиотека `@polkadot/api`. А для взаимодействия дапп с расширением с ключами библиотека `@polkadot/extension-dapp`. Их нам и нужно установить в наше приложение.
 
 ```sh
 yarn add @polkadot/api @polkadot/extension-dapp
 ```
 
-#### Connecting to Robonomics
+#### Подключение к робономике
 
-First, let's create a configuration file with the parameters for connecting to the Robonomics node. In the demo repository, there is an example of this file `config.template.json`.
+Для начала сделаем конфигурационный файл с параметрами подключения к ноде робономики. В репозитории с демо, есть пример данного файла `config.template.json`.
 
 `src/config.json`
 ```json
@@ -90,9 +93,9 @@ First, let's create a configuration file with the parameters for connecting to t
 }
 ```
 
-In this file, we indicate the node, which we are going to connect to, and custom types. The types for Robonomics can be taken from github https://github.com/airalab/robonomics/blob/master/bin/node/cli/res/custom_types.json
+В этом файле мы указываем ноду к которой подключаемся и кастомные типы, типы для робономики можно взять с github https://github.com/airalab/robonomics/blob/master/bin/node/cli/res/custom_types.json
 
-Now we need to write a script to connect to our running node.
+Теперь необходимо написать скрипт для подключения к нашей запущенной ноде.
 
 `src/utils/api.js`
 ```js
@@ -114,7 +117,7 @@ export function getApi() {
 }
 ```
 
-So that we can sign transactions with the key from the extension, let’s add two functions for connecting to the extension and the function for initializing the account.
+Чтобы мы могли подписывать транзакции ключем из расширения, добавим две функции подключения к расширению и функию инициализации аккаунта.
 
 `src/utils/api.js`
 ```js
@@ -148,7 +151,7 @@ export async function initAccount(index = 0) {
 ...
 ```
 
-Our account will have a zero balance, while we need a little funds. So we need to create another faucet function. As we launched Robonomics with the `--dev` flag, we have `Alice` account with a large balance, so we will request funds from there.
+Наш аккаунт будет с нулевым балансом, а нам потребуется немного средств, поэтому нам нужно сделать еще функцию крана. Тк мы запустили робономику с ключом `--dev`, у нас есть аккаунт `Alice` с большим балансом, у него и будем запрашивать средства.
 
 `src/utils/api.js`
 ```js
@@ -172,9 +175,9 @@ export async function faucet(address) {
 ...
 ```
 
-The full version of script https://github.com/vol4tim/example-robonomics-dapp/blob/master/src/utils/api.js
+Полная версия скрипта https://github.com/vol4tim/example-robonomics-dapp/blob/master/src/utils/api.js
 
-If you start the application with cloning the repository, then in order to complete these steps, it will be enough to switch to step 2 and install the rest of the dependencies.
+Если приложение начинали с клонирования репозитория, то чтобы выполнить данные действия достаточно переключиться на шаг 2 и доустановить зависимости.
 
 ```sh
 git checkout step-2
@@ -182,13 +185,13 @@ cp src/config.template.json src/config.json
 yarn
 ```
 
-### Vue connecting component
+### Vue компонет подключения
 
-#### Connecting
+#### Подключение
 
-We have already written a script for connecting. Now we can use it on our interface. It is enough to call the written `initApi` function in  the root component `App.vue`. And while the user is waiting for a connection, we will show him a small loader, for now in the form of an ellipsis.
+Скрипт для подключения у нас уже написан. Теперь можно его использовать на нашем интерфейсе. В корневом компоненте `App.vue` для этого достаточно вызвать написаную функцию `initApi`. И пока пользователь ожидает подключения, мы ему покажем небольшой лоадер, пока в виде многоточия.
 
-Component template and base styles.
+Шаблон компонента и базовые стили.
 
 `src/App.vue`
 ```js
@@ -244,7 +247,7 @@ input:focus {
 </style>
 ```
 
-There is the component code where the  `initApi` function will be called
+Код компонента в котором и будет вызвана функция `initApi`
 
 `src/App.vue`
 ```js
@@ -279,11 +282,11 @@ export default {
 </script>
 ```
 
-#### Account with balance
+#### Аккаунт с балансом
 
-Now we can use our account, top up its balance and show it on the interface.
+Теперь мы можем использовать наш аккаунт, пополнить его баланс и показать на интерфейсе.
 
-Let’s add the appropriate markup to the template
+В шаблон добавим соответсвующию разметку
 
 `src/App.vue`
 
@@ -305,7 +308,7 @@ Let’s add the appropriate markup to the template
 </template>
 ```
 
-Let’s add new fields for account address and balance
+Добавим новые поля для адреса аккаунта и баланса
 
 `src/App.vue`
 ```js
@@ -321,7 +324,7 @@ data() {
 ...
 ```
 
-We need to add the account initialization to the `init` function and get its balance
+В функцию `init` нужно добавить инициализацию акканта и получить его баланс
 
 `src/App.vue`
 ```js
@@ -342,7 +345,7 @@ async init() {
 </script>
 ```
 
-It remains to add the function of replenishing the balance, when clicking on the button
+Осталось добавить функцию пополнения баланса, при нажатии на кнопку
 
 `src/App.vue`
 ```js
@@ -358,23 +361,23 @@ It remains to add the function of replenishing the balance, when clicking on the
 
 https://github.com/vol4tim/example-robonomics-dapp/blob/master/src/App.vue
 
-If you start the application with cloning the repository, then to complete these steps, you will just need to switch to step 3.
+Если приложение начинали с клонирования репозитория, то чтобы выполнить данные действия достаточно переключиться на шаг 3.
 
 ```sh
 git checkout step-3
 ```
 
-As a result we will get this picture in the browser
+В результате мы получим в браузере данную картинку
 
 ![screen2](./assets/screen2.png)
 
 ### Datalog
 
-To save and read any data in the chain, we use the `datalog` module.
+Для сохранения и чтения любых данных в чейн используем модуль `datalog`
 
-For an example of how to use this module, let's make a `Datalog.vue` component.
+Для примера, как использовать данный модуль, сделаем компонет `Datalog.vue`
 
-In the markup, we will have a button for reading data `read` with a block, where we will display a list in the form of a date and the data itself. And there will be a form with a text input, into which you can enter any data in the form of a string, and a `write` button.
+В разметке у нас будет кнопка для чтения данных `read` с блоком в котором будем выводить список в виде даты и самих данных. И форма с текстовым инпутом в который можно будет внести любые данные в виде строки и кнопка `write`.
 
 `src/components/Datalog.vue`
 ```js
@@ -411,7 +414,7 @@ In the markup, we will have a button for reading data `read` with a block, where
 </style>
 ```
 
-Component code. Here the main point in sending a transaction is to call the function, into which we transfer data and which we sign with our account, via api `this.api.tx.datalog.record(stringToHex(this.data)).signAsync(this.account);`
+Код компонента. Тут основной момент в отправке транзакции, вызвать функцию через api в которую передаем данные и подписываем своим аккаунтом `this.api.tx.datalog.record(stringToHex(this.data)).signAsync(this.account);`
 
 `src/components/Datalog.vue`
 ```js
@@ -465,7 +468,7 @@ export default {
 
 https://github.com/vol4tim/example-robonomics-dapp/blob/master/src/components/Datalog.vue
 
-To switch between components, added to `App.vue` the output of our component
+Для переключения между компонентами, добавим в `App.vue` вывод нашего компонента
 
 `src/App.vue`
 ```js
@@ -525,21 +528,21 @@ export default {
 </style>
 ```
 
-If you start the application with cloning the repository, then to complete these steps, you will just need to switch to step 4.
+Если приложение начинали с клонирования репозитория, то чтобы выполнить данные действия достаточно переключиться на шаг 4.
 
 ```sh
 git checkout step-4
 ```
 
-As a result we will get this picture in the browser
+В результате мы получим в браузере данную картинку
 
 ![screen3](./assets/screen3.png)
 
 ### Launch
 
-This function is used to start and stop the robot. To demonstrate how to use this module, let's write the `Launch.vue` component.
+Данная функция используется для запуска и остановки робота. Для демонтрации как использовать данный модуль, напишем компонент `Launch.vue`.
 
-In the component template, we will have a form where you can specify the address of the robot, the ON/OFF clicker and the button for sending.
+В шаблоне компонента у нас будет форма в которой можно указать адрес робота, переключатель ON/OFF и кнопка для отправки.
 
 `src/components/Launch.vue`
 ```js
@@ -580,7 +583,7 @@ In the component template, we will have a form where you can specify the address
 </style>
 ```
 
-The code looks like the `Datalog.vue` component. The difference is just in reading. The robot will receive the command through events.
+Код похож на компонет `Datalog.vue` отличается только в чтении. Робот будет получать команду через события (events).
 
 `src/components/Launch.vue`
 ```js
@@ -644,7 +647,7 @@ export default {
 
 https://github.com/vol4tim/example-robonomics-dapp/blob/master/src/components/Launch.vue
 
-For display, add a new component to `App.vue`
+Для вывода, добавим новый компонент в `App.vue`
 
 `src/App.vue`
 ```js
@@ -679,21 +682,22 @@ components: {
 ...
 ```
 
-If you start the application with cloning the repository, then to complete these steps, you will just need to switch to step 5.
+Если приложение начинали с клонирования репозитория, то чтобы выполнить данные действия достаточно переключиться на шаг 5.
 
 ```sh
 git checkout step-5
 ```
 
-As a result we will get this picture in the browser
+В результате мы получим в браузере данную картинку
 
 ![screen4](./assets/screen4.png)
 
 ### Demo
 
-In this demo, we will have a car that can be started and stopped through the dApp. The car collects a log during the trip, and after stopping, saves it to the chain. Here we will use both modules, which we tried separately, in conjunction.
+В данной демонстрации у нас будет автомобиль, который можно будет запустить и остановить через дапп. Аавтомобиль во время поездки собирает лог, а после остановки сохраняет его в чейн.
+Тут как раз применим оба модуля в связке, которые мы попробовали по отдельности.
 
-To emulate the behavior of a robot (car), we will write a Robot class. We will use the `Alice` key as an account for this robot. The `Robot` class will watch for `NewLaunch` events to turn itself on and off. After turning on, it starts collecting data into the log, in terms of data it will be just a timestamp. And after shutdown, it saves this log to the `datalog` module.
+Для эмуляции поведения робота (авто) напишем класс `Robot`. А в качестве аккаунта для даного робота будем использовать ключ `Alice`. Класс `Robot` будет следить за событиями `NewLaunch`, чтобы включиться и выключиться. А после включения начинает в лог собирать данные, в качетсве данных это будет просто временная метка. А после выключения сохранять данный лог в модуль `datalog`.
 
 `src/utils/robot.js`
 ```js
@@ -705,9 +709,9 @@ export default class Robot {
 }
 ```
 
-The full code of the file https://github.com/vol4tim/example-robonomics-dapp/blob/master/src/utils/robot.js
+Полный код файла https://github.com/vol4tim/example-robonomics-dapp/blob/master/src/utils/robot.js
 
-For visualization, we will create a `Demo.vue` component, where we will have a start button, car animation and log output.
+Для визуализации создадим компонет `Demo.vue` в котором будет кнопка запуска, анимация авто и вывод лога.
 
 `src/components/Demo.vue`
 ```js
@@ -800,7 +804,7 @@ For visualization, we will create a `Demo.vue` component, where we will have a s
 </style>
 ```
 
-Component code. Here we need to create an instance of the `Robot` class and a launch/stop function.
+Код компонента. Тут нам нужно создать экземпляр класса `Robot` и функцию запуска и остановки.
 
 `src/components/Demo.vue`
 ```js
@@ -864,9 +868,9 @@ export default {
 
 https://github.com/vol4tim/example-robonomics-dapp/blob/master/src/components/Demo.vue
 
-Let's add another picture of our car to `src/assets/car.png`.
+Добавим еще картинку шашего автомобиля в `src/assets/car.png`.
 
-For display, add a new component to `App.vue`
+Для вывода, добавим новый компонент в `App.vue`
 
 `src/App.vue`
 ```js
@@ -907,16 +911,16 @@ components: {
 ...
 ```
 
-If you start the application with cloning the repository, then to complete these steps, you will just need to switch to step 6.
+Если приложение начинали с клонирования репозитория, то чтобы выполнить данные действия достаточно переключиться на шаг 6.
 
 ```sh
 git checkout step-6
 ```
 
-As a result we will get this picture in the browser
+В результате мы получим в браузере данную картинку
 
 ![screen5](./assets/screen5.png)
 
-This concludes our lesson.
+На этом наш урок подошел к концу.
 
-Thanks!
+Спасибо!
