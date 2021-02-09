@@ -86,15 +86,9 @@ yarn add @polkadot/api @polkadot/extension-dapp
   "endpoint": "ws://localhost:9944",
   "types": {
     "Record": "Vec<u8>",
-    "TechnicalParam": "Vec<u8>",
-    "TechnicalReport": "Vec<u8>",
-    "EconomicalParam": "{}",
-    "ProofParam": "MultiSignature",
-    "LiabilityIndex": "u64",
-    "Address": "AccountId",
-    "LookupSource": "AccountId",
     "Parameter": "Bool",
-    "BlockLength": "(u32,u32,u32)"
+    "Address": "AccountId",
+    "LookupSource": "AccountId"
   }
 }
 ```
