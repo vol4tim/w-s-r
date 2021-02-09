@@ -10,7 +10,7 @@
 
 Распаковываем архив
 ```sh
-unzip robonomics-ubuntu-0.23.0-x86_64.zip
+unzip robonomics-ubuntu-0.24.0-x86_64.zip
 ```
 
 Теперь можно запустить узел в режиме разработки. Для этого используем ключ --dev
@@ -55,13 +55,13 @@ vue create mydapp
 
 ```sh
 git clone https://github.com/vol4tim/example-robonomics-dapp.git mydapp
+cd mydapp
 git checkout step-1
 ```
 
 В итоге получим директорию с установленым стартовым приложением, которое уже можно запустить и открыть в браузере.
 
 ```sh
-cd mydapp
 yarn
 yarn serve
 ```
@@ -91,8 +91,8 @@ yarn add @polkadot/api @polkadot/extension-dapp
     "EconomicalParam": "{}",
     "ProofParam": "MultiSignature",
     "LiabilityIndex": "u64",
-    "Address": "MultiAddress",
-    "LookupSource": "MultiAddress",
+    "Address": "AccountId",
+    "LookupSource": "AccountId",
     "Parameter": "Bool",
     "BlockLength": "(u32,u32,u32)"
   }
@@ -299,6 +299,8 @@ export default {
 ```js
 <template>
   ...
+    <template v-else>
+      <div v-if="error" class="error">{{ error }}</div>
       <template v-else-if="api && account">
         <p>
           Account: <b>{{ account }}</b> {{ balance }} |
@@ -307,6 +309,7 @@ export default {
           </button>
         </p>
       </template>
+    </template>
   ...
 </template>
 ```
@@ -331,9 +334,13 @@ data() {
 
 `src/App.vue`
 ```js
+<script>
+import { initApi, initAccount, getBalance, faucet } from "./utils/api";
+import { formatBalance } from "@polkadot/util";
 ...
 async init() {
   ...
+  this.api = await initApi();
   this.account = await initAccount();
   getBalance(this.account, balance => {
     this.balance = formatBalance(balance);
@@ -341,6 +348,7 @@ async init() {
   ...
 }
 ...
+</script>
 ```
 
 Осталось добавить функцию пополнения баланса, при нажатии на кнопку
@@ -348,9 +356,12 @@ async init() {
 `src/App.vue`
 ```js
 ...
-faucet() {
-  faucet(this.account);
-}
+  methods: {
+    faucet() {
+      faucet(this.account);
+    },
+  ...
+  }
 ...
 ```
 
@@ -415,6 +426,7 @@ git checkout step-3
 ```js
 <script>
 import { stringToHex, u8aToString } from "@polkadot/util";
+
 export default {
   props: ["api", "account"],
   data() {
@@ -461,6 +473,66 @@ export default {
 ```
 
 https://github.com/vol4tim/example-robonomics-dapp/blob/master/src/components/Datalog.vue
+
+Для переключения между компонентами, добавим в `App.vue` вывод нашего компонента
+
+`src/App.vue`
+```js
+...
+<template v-else-if="api && account">
+  <p>
+    Account: <b>{{ account }}</b> {{ balance }} |
+    <button @click="faucet">faucet</button>
+  </p>
+
+  <div>
+    <div class="tabs">
+      <button
+        @click="tab = 'datalog'"
+        :class="{ active: tab === 'datalog' }"
+      >
+        datalog
+      </button>
+    </div>
+    <Datalog v-if="tab === 'datalog'" :api="api" :account="account" />
+  </div>
+</template>
+...
+
+<script>
+import Datalog from "./components/Datalog";
+...
+export default {
+  name: "App",
+  components: {
+    Datalog
+  },
+  data() {
+    return {
+      tab: "datalog"
+...
+</script>
+
+<style>
+...
+.tabs button {
+  font-size: 14px;
+  padding: 10px 20px;
+  font-weight: bold;
+  background: #ececec;
+  border: 1px solid #aaa;
+}
+.tabs button:hover {
+  background: #bfbfbf;
+}
+.tabs button:last-child {
+  border-left: none;
+}
+.tabs button.active {
+  background: #ced5e2;
+}
+</style>
+```
 
 Если приложение начинали с клонирования репозитория, то чтобы выполнить данные действия достаточно переключиться на шаг 4.
 
@@ -580,6 +652,41 @@ export default {
 ```
 
 https://github.com/vol4tim/example-robonomics-dapp/blob/master/src/components/Launch.vue
+
+Для вывода, добавим новый компонент в `App.vue`
+
+`src/App.vue`
+```js
+...
+<div>
+  <div class="tabs">
+    <button
+      @click="tab = 'datalog'"
+      :class="{ active: tab === 'datalog' }"
+    >
+      datalog
+    </button>
+    <button
+      @click="tab = 'launch'"
+      :class="{ active: tab === 'launch' }"
+    >
+      launch
+    </button>
+  </div>
+  <Datalog v-if="tab === 'datalog'" :api="api" :account="account" />
+  <Launch v-if="tab === 'launch'" :api="api" :account="account" />
+</div>
+...
+<script>
+import Datalog from "./components/Datalog";
+import Launch from "./components/Launch";
+...
+components: {
+  Datalog,
+  Launch
+},
+...
+```
 
 Если приложение начинали с клонирования репозитория, то чтобы выполнить данные действия достаточно переключиться на шаг 5.
 
@@ -766,6 +873,49 @@ export default {
 ```
 
 https://github.com/vol4tim/example-robonomics-dapp/blob/master/src/components/Demo.vue
+
+Добавим еще картинку шашего автомобиля в `src/assets/car.png`.
+
+Для вывода, добавим новый компонент в `App.vue`
+
+`src/App.vue`
+```js
+...
+<div>
+  <div class="tabs">
+    <button
+      @click="tab = 'datalog'"
+      :class="{ active: tab === 'datalog' }"
+    >
+      datalog
+    </button>
+    <button
+      @click="tab = 'launch'"
+      :class="{ active: tab === 'launch' }"
+    >
+      launch
+    </button>
+    <button @click="tab = 'demo'" :class="{ active: tab === 'demo' }">
+      demo
+    </button>
+  </div>
+  <Datalog v-if="tab === 'datalog'" :api="api" :account="account" />
+  <Launch v-if="tab === 'launch'" :api="api" :account="account" />
+  <Demo v-if="tab === 'demo'" :api="api" :account="account" />
+</div>
+...
+<script>
+import Datalog from "./components/Datalog";
+import Launch from "./components/Launch";
+import Demo from "./components/Demo";
+...
+components: {
+  Datalog,
+  Launch,
+  Demo
+},
+...
+```
 
 Если приложение начинали с клонирования репозитория, то чтобы выполнить данные действия достаточно переключиться на шаг 6.
 
